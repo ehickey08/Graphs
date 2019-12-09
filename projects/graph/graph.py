@@ -3,9 +3,10 @@ Simple graph implementation
 """
 from util import Stack, Queue  # These may come in handy
 
-class Graph:
 
+class Graph:
     """Represent a graph as a dictionary of vertices mapping labels to edges."""
+
     def __init__(self):
         self.vertices = {}
 
@@ -26,7 +27,6 @@ class Graph:
                 raise IndexError(f"{v2} is not a valid vertex in Graph")
             else:
                 raise IndexError(f"{v1} is not a valid vertex in Graph")
-
 
     def get_neighbors(self, vertex_id):
         """
@@ -52,7 +52,6 @@ class Graph:
                 for node in neighbors:
                     queue.enqueue(node)
 
-
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
@@ -70,7 +69,7 @@ class Graph:
                 for node in neighbors:
                     stack.push(node)
 
-    def dft_recursive(self, starting_vertex, visited = set()):
+    def dft_recursive(self, starting_vertex, visited=set()):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
@@ -96,7 +95,7 @@ class Graph:
 
         while queue.size() > 0:
             path = queue.dequeue()
-            last_node = path[len(path)-1]
+            last_node = path[-1]
             if last_node == destination_vertex:
                 return path
             if last_node not in visited:
@@ -105,7 +104,6 @@ class Graph:
                 for node in neighbors:
                     new_path = [*path] + [node]
                     queue.enqueue(new_path)
-
 
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -119,7 +117,7 @@ class Graph:
 
         while stack.size() > 0:
             path = stack.pop()
-            last_node = path[len(path) - 1]
+            last_node = path[-1]
             if last_node == destination_vertex:
                 return path
             if last_node not in visited:
@@ -129,7 +127,7 @@ class Graph:
                     new_path = [*path] + [node]
                     stack.push(new_path)
 
-    def dfs_recursive(self, starting_vertex):
+    def dfs_recursive(self, start, destination, path = [], visited=set()):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -137,7 +135,21 @@ class Graph:
 
         This should be done using recursion.
         """
-        pass  # TODO
+        final_path = None
+        if len(path) == 0:
+            path.append(start)
+        last_node = path[-1]
+        if last_node == destination:
+            return path
+        if last_node not in visited:
+            visited.add(last_node)
+            neighbors = self.get_neighbors(last_node)
+            for node in neighbors:
+                new_path = [*path] + [node]
+                final_path = self.dfs_recursive(start, destination, new_path)
+        return final_path
+
+
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
