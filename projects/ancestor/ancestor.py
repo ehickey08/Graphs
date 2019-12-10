@@ -1,6 +1,7 @@
-#how do I do thse imports?
-from graph import Graph
+# how do I do thse imports?
+from projects.graph import graph
 from util import Stack
+
 
 def dfs_tracking(graph, starting_node):
     s = Stack()
@@ -26,10 +27,10 @@ def dfs_tracking(graph, starting_node):
 
 
 def earliest_ancestor(ancestors, starting_node):
-    g = Graph()
-    for p,c in ancestors:
+    g = graph.Graph()
+    for p, c in ancestors:
         g.add_vertex(p)
         g.add_vertex(c)
-        g.add_edge(c,p)
+        g.add_edge(c, p)
     return dfs_tracking(g, starting_node)
 
