@@ -1,11 +1,10 @@
 # how do I do thse imports?
-from projects.graph import graph
+from graph import Graph
 from util import Stack
 
 
 def dfs_tracking(graph, starting_node):
     s = Stack()
-    visited = set()
     s.push([starting_node])
     longest_path = 2
     ancestor = float("inf")
@@ -17,9 +16,7 @@ def dfs_tracking(graph, starting_node):
             longest_path = len(path)
         if len(path) == longest_path and last_node < ancestor:
             ancestor = last_node
-        if last_node not in visited:
-            visited.add(last_node)
-            children = graph.get_neighbors(last_node)
+        if len(children := graph.get_neighbors(last_node)) > 0:
             for child in children:
                 new_path = [*path] + [child]
                 s.push(new_path)
@@ -27,7 +24,7 @@ def dfs_tracking(graph, starting_node):
 
 
 def earliest_ancestor(ancestors, starting_node):
-    g = graph.Graph()
+    g = Graph()
     for p, c in ancestors:
         g.add_vertex(p)
         g.add_vertex(c)
