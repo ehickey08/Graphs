@@ -1,6 +1,9 @@
 # how do I do thse imports?
-from graph import Graph
-from util import Stack
+import sys
+sys.path.append('..')
+
+from projects.graph.graph import Graph
+from projects.graph.util import Stack
 
 
 def dfs_tracking(graph, starting_node):
