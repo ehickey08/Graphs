@@ -427,13 +427,15 @@ traversalath = []
 opp_dirs = {'n': 's', 's': 'n', 'w': 'e', 'e': 'w'}
 
 
-def traverse(room, visited=None):
+def traverse(room, visited=None, direction = None):
     if visited is None:
         visited = set()
     path = []
 
     visited.add(room.id)
     for dir in room.getExits():
+        if direction and direction == opp_dirs[dir]:
+            continue
         new_room = room.getRoomInDirection(dir)
         if new_room.id not in visited:
             new_room_path = traverse(new_room, visited)
@@ -442,6 +444,9 @@ def traverse(room, visited=None):
             else:
                 local_path = [dir, opp_dirs[dir]]
             path = path + local_path
+        else:
+            #this is a cycle - needs optimization
+            pass
     return path
 
 
