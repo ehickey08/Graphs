@@ -26,12 +26,15 @@ class SocialGraph:
         """
         if user_id == friend_id:
             print("WARNING: You cannot be friends with yourself")
+            return False
         elif friend_id in self.friendships[user_id] or user_id in \
                 self.friendships[friend_id]:
             print("WARNING: Friendship already exists")
+            return False
         else:
             self.friendships[user_id].add(friend_id)
             self.friendships[friend_id].add(user_id)
+            return True
 
     def add_user(self, name):
         """
@@ -61,6 +64,8 @@ class SocialGraph:
         for i in range(num_users):
             self.add_user(f"User {i}")
 
+        '''
+        This is O(n^2). Second solution is an attempt at O(n)
         # Create friendships
         possible_friendships = []
         for userID in self.users:
@@ -73,6 +78,16 @@ class SocialGraph:
         for i in range(total_friendships):
             friendship = possible_friendships[i]
             self.add_friendship(friendship[0], friendship[1])
+        '''
+
+        total_friendships = avg_friendships * num_users
+
+        while total_friendships > 0:
+            userID = random.randint(1, self.last_id)
+            friendID = random.randint(1, self.last_id)
+            if self.add_friendship(userID, friendID):
+                total_friendships -= 2
+
 
     def get_all_social_paths(self, user_id):
         """
