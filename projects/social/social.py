@@ -85,6 +85,8 @@ class SocialGraph:
         while total_friendships > 0:
             userID = random.randint(1, self.last_id)
             friendID = random.randint(1, self.last_id)
+            if friendID == userID:
+                continue
             if self.add_friendship(userID, friendID):
                 total_friendships -= 2
 
