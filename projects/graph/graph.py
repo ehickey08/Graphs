@@ -1,7 +1,7 @@
 """
 Simple graph implementation
 """
-from util import Stack, Queue  # These may come in handy
+from graph.util import Stack, Queue  # These may come in handy
 
 
 class Graph:
@@ -223,5 +223,5 @@ if __name__ == '__main__':
     '''
     print(graph.dfs(1, 6))
     print('dfs end\n')
-    print(graph.dfs_recursive(7, 5))
+    print(graph.dfs_recursive(1, 6))
     print('dfs_recursive end\n')
