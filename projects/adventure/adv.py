@@ -3,20 +3,21 @@ from player import Player
 from world import World
 
 import random
+from collections import deque
 
 # Load world
 world = World()
 
 # You may uncomment the smaller graphs for development and testing purposes.
-# roomGraph={0: [(3, 5), {'n': 1}], 1: [(3, 6), {'s': 0, 'n': 2}], 2: [(3, 7), {'s': 1}]}
+roomGraph={0: [(3, 5), {'n': 1}], 1: [(3, 6), {'s': 0, 'n': 2}], 2: [(3, 7), {'s': 1}]}
 # roomGraph = {0: [(3, 5), {'n': 1, 's': 5, 'e': 3, 'w': 7}],
 #              1: [(3, 6), {'s': 0, 'n': 2}], 2: [(3, 7), {'s': 1}],
 #              3: [(4, 5), {'w': 0, 'e': 4}], 4: [(5, 5), {'w': 3}],
 #              5: [(3, 4), {'n': 0, 's': 6}], 6: [(3, 3), {'n': 5}],
 #              7: [(2, 5), {'w': 8, 'e': 0}], 8: [(1, 5), {'e': 7}]}
-#roomGraph={0: [(3, 5), {'n': 1, 's': 5, 'e': 3, 'w': 7}], 1: [(3, 6),
+# roomGraph={0: [(3, 5), {'n': 1, 's': 5, 'e': 3, 'w': 7}], 1: [(3, 6),
 # {'s': 0, 'n': 2}], 2: [(3, 7), {'s': 1}], 3: [(4, 5), {'w': 0, 'e': 4}], 4: [(5, 5), {'w': 3}], 5: [(3, 4), {'n': 0, 's': 6}], 6: [(3, 3), {'n': 5, 'w': 11}], 7: [(2, 5), {'w': 8, 'e': 0}], 8: [(1, 5), {'e': 7}], 9: [(1, 4), {'n': 8, 's': 10}], 10: [(1, 3), {'n': 9, 'e': 11}], 11: [(2, 3), {'w': 10, 'e': 6}]}
-roomGraph={0: [(3, 5), {'n': 1, 's': 5, 'e': 3, 'w': 7}], 1: [(3, 6), {'s': 0, 'n': 2, 'e': 12, 'w': 15}], 2: [(3, 7), {'s': 1}], 3: [(4, 5), {'w': 0, 'e': 4}], 4: [(5, 5), {'w': 3}], 5: [(3, 4), {'n': 0, 's': 6}], 6: [(3, 3), {'n': 5, 'w': 11}], 7: [(2, 5), {'w': 8, 'e': 0}], 8: [(1, 5), {'e': 7}], 9: [(1, 4), {'n': 8, 's': 10}], 10: [(1, 3), {'n': 9, 'e': 11}], 11: [(2, 3), {'w': 10, 'e': 6}], 12: [(4, 6), {'w': 1, 'e': 13}], 13: [(5, 6), {'w': 12, 'n': 14}], 14: [(5, 7), {'s': 13}], 15: [(2, 6), {'e': 1, 'w': 16}], 16: [(1, 6), {'n': 17, 'e': 15}], 17: [(1, 7), {'s': 16}]}
+# roomGraph={0: [(3, 5), {'n': 1, 's': 5, 'e': 3, 'w': 7}], 1: [(3, 6), {'s': 0, 'n': 2, 'e': 12, 'w': 15}], 2: [(3, 7), {'s': 1}], 3: [(4, 5), {'w': 0, 'e': 4}], 4: [(5, 5), {'w': 3}], 5: [(3, 4), {'n': 0, 's': 6}], 6: [(3, 3), {'n': 5, 'w': 11}], 7: [(2, 5), {'w': 8, 'e': 0}], 8: [(1, 5), {'e': 7}], 9: [(1, 4), {'n': 8, 's': 10}], 10: [(1, 3), {'n': 9, 'e': 11}], 11: [(2, 3), {'w': 10, 'e': 6}], 12: [(4, 6), {'w': 1, 'e': 13}], 13: [(5, 6), {'w': 12, 'n': 14}], 14: [(5, 7), {'s': 13}], 15: [(2, 6), {'e': 1, 'w': 16}], 16: [(1, 6), {'n': 17, 'e': 15}], 17: [(1, 7), {'s': 16}]}
 # roomGraph = {494: [(1, 8), {'e': 457}], 492: [(1, 20), {'e': 400}], 493: [(2,
 #                                                                            5), {
 #                                                                               'e': 478}],
@@ -422,11 +423,11 @@ world.loadGraph(roomGraph)
 world.printRooms()
 
 player = Player("Name", world.startingRoom)
+opp_dirs = {'n': 's', 's': 'n', 'w': 'e', 'e': 'w', 'start': 'all'}
 
-# Fill this out
-
+'''
 #First naive approach, dft, ignore cycles
-opp_dirs = {'n': 's', 's': 'n', 'w': 'e', 'e': 'w'}
+
 
 
 def traverse(room, visited=None):
@@ -445,16 +446,87 @@ def traverse(room, visited=None):
                 local_path = [dir, opp_dirs[dir]]
             path = path + local_path
     return path
+'''
+
+
+# Fill this out
+def direction_conversion(path, graph):
+    directions = []
+    while len(path) > 1:
+        room = path.pop()
+        next_room = path[-1]
+        for dir in graph[room.id]:
+            if graph[room.id][dir] == next_room.id:
+                directions.append(dir)
+    return directions
+
+
+def bfs(start_room, graph):
+    q = deque()
+    q.append([start_room])
+    while len(q) > 0:
+        path = q.popleft()
+        room = path[-1]
+        if find_options(room, graph):
+            return direction_conversion(path, graph)
+        for dir in graph[room.id]:
+            path_copy = path.copy()
+            new_room = room.getRoomInDirection(dir)
+            path_copy.append(new_room)
+            q.append(path_copy)
 
 
 
-traversalPath = traverse(player.currentRoom)
+def store_room(room, graph):
+    if room.id not in graph:
+        graph[room.id] = {}
+        for dir in room.getExits():
+            graph[room.id][dir] = '?'
+
+
+def find_options(room, graph):
+    options = []
+    for dir in graph[room.id]:
+        if graph[room.id][dir] == '?':
+            options.append(dir)
+    return options
+
+
+def traverse(options, path, room, graph):
+    random_dir = random.randint(0, len(options) - 1)
+    new_dir = options[random_dir]
+    path.append(new_dir)
+    new_room = room.getRoomInDirection(new_dir)
+    graph[room.id][new_dir] = new_room.id
+    store_room(new_room, graph)
+    graph[new_room.id][opp_dirs[new_dir]] = room.id
+    return new_room
+
+
+def make_path(starting_room):
+    graph = {}
+    room = starting_room
+    path = []
+    while len(graph) < len(roomGraph):
+        store_room(room, graph)
+        options = find_options(room, graph)
+        if options:
+            room = traverse(options, path, room, graph)
+        else:
+            next_path = bfs(room, graph)
+            path = path + next_path
+    return path
+
+
+traversalPath = make_path(player.currentRoom)
+
 # TRAVERSAL TEST
 visited_rooms = set()
 player.currentRoom = world.startingRoom
 visited_rooms.add(player.currentRoom)
 
 for move in traversalPath:
+    print(player.currentRoom.id)
     player.travel(move)
     visited_rooms.add(player.currentRoom)
 
