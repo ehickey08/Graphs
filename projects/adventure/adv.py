@@ -91,6 +91,11 @@ def dead_end(test_room, dir):
     exits = room.getExits()
     if len(exits) == 1:
         return True
+    elif len(exits) == 2:
+        new_dir = list(filter(lambda d: d != opp_dirs[dir], exits))[0]
+        return dead_end(room, new_dir)
+    else:
+        return False
 
 
 def traverse(options, path, room, graph):
