@@ -94,8 +94,8 @@ def dead_end(test_room, dir):
 
 
 def traverse(options, path, room, graph):
-    random.shuffle(options)
-    dir = options[0]
+    rand_index = random.randint(0, len(options) - 1)
+    dir = options[rand_index]
     for opt in options:
         if dead_end(room, opt):
             dir = opt
