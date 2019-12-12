@@ -503,6 +503,7 @@ def dead_end(test_room, dir):
         return True
 
 
+
 def traverse(options, path, room, graph):
     dir = options[random.randint(0, len(options) - 1)]
     for opt in options:
@@ -533,7 +534,23 @@ def make_path(starting_room):
     return path
 
 
-traversalPath = make_path(player.currentRoom)
+def shortest_path(start):
+    shortest_length = 1000
+    path = []
+    for i in range(100000000):
+        if i % 10000 == 0:
+            print(i, shortest_length)
+        attempt = make_path(start)
+        if len(attempt) < shortest_length:
+            shortest_length = len(attempt)
+            path = attempt
+            print(i, shortest_length)
+            if shortest_length < 930:
+                print(path)
+    return path
+
+traversalPath = shortest_path(player.currentRoom)
+print(traversalPath)
 
 # TRAVERSAL TEST
 visited_rooms = set()
