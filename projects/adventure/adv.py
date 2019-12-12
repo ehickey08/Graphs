@@ -2,6 +2,7 @@ from room import Room
 from player import Player
 from world import World
 from roomGraphs import roomGraph
+from best import best_path
 import random
 from collections import deque
 
@@ -132,21 +133,21 @@ def make_path(starting_room):
 def shortest_path(start):
     shortest_length = 1000
     path = []
-    for i in range(5000000):
-        if i % 50000 == 0 and i != 0:
-            print(i, shortest_length)
+    while shortest_length != 917:
         attempt = make_path(start)
         if len(attempt) < shortest_length:
             shortest_length = len(attempt)
             path = attempt
-            print(i, shortest_length)
+            print(shortest_length)
             if shortest_length < 930:
                 print(path)
+            if shortest_length == 917:
+                return path
     return path
 
 
-traversalPath = shortest_path(player.currentRoom)
-print(traversalPath)
+#traversalPath = shortest_path(player.currentRoom)
+traversalPath = best_path
 
 # TRAVERSAL TEST
 visited_rooms = set()
