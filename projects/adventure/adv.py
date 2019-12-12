@@ -14,10 +14,10 @@ world.loadGraph(roomGraph)
 world.printRooms()
 
 player = Player("Name", world.startingRoom)
-opp_dirs = {'n': 's', 's': 'n', 'w': 'e', 'e': 'w', 'start': 'all'}
+opp_dirs = {'n': 's', 's': 'n', 'w': 'e', 'e': 'w'}
 
 '''
-#First naive approach, dft, ignore cycles
+#First naive approach, dft, ignore cycles - got 998
 
 
 
