@@ -2,7 +2,6 @@ from room import Room
 from player import Player
 from world import World
 from roomGraphs import roomGraph
-from best import best_path
 import random
 from collections import deque
 
@@ -87,23 +86,26 @@ def find_options(room, graph):
     return options
 
 
-def dead_end(test_room, dir):
+def dead_end(test_room, dir, visited):
+    visited.add(test_room.id)
     room = test_room.getRoomInDirection(dir)
     exits = room.getExits()
-    if len(exits) == 1:
-        return True
-    elif len(exits) == 2:
-        new_dir = list(filter(lambda d: d != opp_dirs[dir], exits))[0]
-        return dead_end(room, new_dir)
+    viable_exits = [exit for exit in exits if room.getRoomInDirection(exit).id
+                    not in visited]
+    if len(viable_exits) == 0:
+        return 1
     else:
-        return False
-
+        total = 1
+        for new_dir in viable_exits:
+            total += dead_end(room, new_dir, visited)
+        return total
 
 def traverse(options, path, room, graph):
-    rand_index = random.randint(0, len(options) - 1)
-    dir = options[rand_index]
+    shortest = float("inf")
     for opt in options:
-        if dead_end(room, opt):
+        possible_path = dead_end(room, opt, set())
+        if possible_path < shortest:
+            shortest = possible_path
             dir = opt
     path.append(dir)
     new_room = room.getRoomInDirection(dir)
@@ -129,25 +131,7 @@ def make_path(starting_room):
             path = path + next_path
     return path
 
-
-def shortest_path(start):
-    shortest_length = 1000
-    path = []
-    while shortest_length != 917:
-        attempt = make_path(start)
-        if len(attempt) < shortest_length:
-            shortest_length = len(attempt)
-            path = attempt
-            print(shortest_length)
-            if shortest_length < 930:
-                print(path)
-            if shortest_length == 917:
-                return path
-    return path
-
-
-#traversalPath = shortest_path(player.currentRoom)
-traversalPath = best_path
+traversalPath = make_path(player.currentRoom)
 
 # TRAVERSAL TEST
 visited_rooms = set()
