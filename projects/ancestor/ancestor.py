@@ -43,18 +43,25 @@ sys.path.append('..')
 
 from graph.util import Stack
 
-def get_parents(ancestors, starting_node):
-    parents = []
+def build_graph(ancestors):
+    graph = {}
     for p,c in ancestors:
-        if c == starting_node:
-            parents.append(p)
-    return parents
+        graph[c] = graph.get(c, [])
+        graph[c].append(p)
+    return graph
+
+def get_parents(graph, starting_node):
+    if starting_node in graph:
+        return graph[starting_node]
+    else:
+        return []
 
 def earliest_ancestor(ancestors, starting_node):
     s = Stack()
     s.push([starting_node])
     longest_path = 1
     ancestor = None
+    graph = build_graph(ancestors)
     while s.size() > 0:
         path = s.pop()
         v = path[-1]
@@ -63,7 +70,7 @@ def earliest_ancestor(ancestors, starting_node):
             ancestor = v
         if len(path) == longest_path and ancestor:
             ancestor = v if v < ancestor else ancestor
-        for p in get_parents(ancestors, v):
+        for p in get_parents(graph, v):
             path_copy = path.copy()
             path_copy.append(p)
             s.push(path_copy)
