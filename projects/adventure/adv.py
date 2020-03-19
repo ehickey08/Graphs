@@ -14,13 +14,13 @@ world.loadGraph(roomGraph)
 world.printRooms()
 
 player = Player("Name", world.startingRoom)
-opp_dirs = {'n': 's', 's': 'n', 'w': 'e', 'e': 'w'}
+opp_dirs = {'n': 's', 's': 'n', 'w': 'e', 'e': 'w', None: None}
 
 '''
 #First naive approach, dft, ignore cycles - got 998
 
 
-
+# recursive
 def traverse(room, visited=None):
     if visited is None:
         visited = set()
@@ -38,6 +38,7 @@ def traverse(room, visited=None):
             path = path + local_path
     return path
 '''
+
 
 
 # Fill this out
